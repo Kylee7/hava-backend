@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المسؤولين - Perfect Cfw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #1a0b2e 0%, #2d1b4e 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .header h1 {
+            color: #a78bfa;
+            font-size: 28px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(167, 139, 250, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .admins-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(167, 139, 250, 0.2);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            color: #a78bfa;
+            font-size: 24px;
+        }
+
+        .admins-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admins-table th,
+        .admins-table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(167, 139, 250, 0.1);
+        }
+
+        .admins-table th {
+            background: rgba(167, 139, 250, 0.1);
+            color: #a78bfa;
+            font-weight: 700;
+        }
+
+        .admins-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .badge-admin {
+            background: rgba(124, 58, 237, 0.2);
+            color: #c4b5fd;
+            border: 1px solid #7c3aed;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a0b2e 0%, #2d1b4e 100%);
+            border: 2px solid rgba(167, 139, 250, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            color: #a78bfa;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(167, 139, 250, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #a78bfa;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+        }
+    </style>
+    <script src="js/modal-system.js"></script>
+    <link rel="stylesheet" href="css/modal-system.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-users-cog"></i> إدارة المسؤولين</h1>
+            <div>
+                <a href="admin-dashboard.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-right"></i> العودة للوحة التحكم
+                </a>
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-user-plus"></i> إضافة مسؤول جديد
+                </button>
+            </div>
+        </div>
+
+        <div class="admins-section">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <span>يمكنك إنشاء حسابات مسؤولين جديدة للوصول إلى لوحة التحكم</span>
+            </div>
+
+            <div class="section-header">
+                <h2>قائمة المسؤولين</h2>
+            </div>
+            
+            <div id="adminsContainer">
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>جاري التحميل...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h2>إضافة مسؤول جديد</h2>
+            <form id="adminForm">
+                <div class="form-group">
+                    <label>اسم المستخدم <span style="color: #ef4444;">*</span></label>
+                    <input type="text" id="username" required placeholder="مثال: admin2">
+                </div>
+
+                <div class="form-group">
+                    <label>كلمة المرور <span style="color: #ef4444;">*</span></label>
+                    <input type="password" id="password" required placeholder="أدخل كلمة مرور قوية">
+                </div>
+
+                <div class="form-group">
+                    <label>البريد الإلكتروني <span style="color: #ef4444;">*</span></label>
+                    <input type="email" id="email" required placeholder="مثال: admin@hava-rp.com">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> إنشاء الحساب
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://perfect-backend-production.up.railway.app/api';
+
+        // Check if user is superadmin
+        async function checkSuperAdmin() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_URL}/admins/check-superadmin`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                
+                if (!data.success || !data.isSuperAdmin) {
+                    modalSystem.showAlert('تحذير', 'هذه الصفحة مخصصة للمسؤول الرئيسي فقط', 'warning');
+                    window.location.href = 'admin-dashboard.html';
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error checking superadmin:', error);
+                window.location.href = 'admin-dashboard.html';
+                return false;
+            }
+        }
+
+        // Load admins list
+        async function loadAdmins() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_URL}/admins`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayAdmins(data.data);
+                } else {
+                    showError('فشل تحميل قائمة المسؤولين');
+                }
+            } catch (error) {
+                console.error('Error loading admins:', error);
+                showError('خطأ في تحميل قائمة المسؤولين');
+            }
+        }
+
+        // Display admins
+        function displayAdmins(admins) {
+            const container = document.getElementById('adminsContainer');
+            
+            if (admins.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>لا يوجد مسؤولون</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table class="admins-table">
+                    <thead>
+                        <tr>
+                            <th>اسم المستخدم</th>
+                            <th>البريد الإلكتروني</th>
+                            <th>الصلاحية</th>
+                            <th>تاريخ الإنشاء</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            admins.forEach(admin => {
+                const date = new Date(admin.createdAt).toLocaleDateString('ar-EG');
+                const isSuperAdmin = admin.role === 'superadmin';
+                const roleText = isSuperAdmin ? 'مسؤول رئيسي' : 'مسؤول';
+                
+                html += `
+                    <tr>
+                        <td><strong>${admin.username}</strong></td>
+                        <td>${admin.email || '-'}</td>
+                        <td><span class="badge badge-admin">${roleText}</span></td>
+                        <td>${date}</td>
+                        <td>
+                            ${!isSuperAdmin ? `
+                                <button class="btn-action btn-delete" onclick="deleteAdmin('${admin._id}', '${admin.username}')">
+                                    <i class="fas fa-trash"></i> حذف
+                                </button>
+                            ` : '<span style="color: #6ee7b7;">محمي</span>'}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('adminForm').reset();
+            document.getElementById('adminModal').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('adminModal').classList.remove('show');
+        }
+
+        // Submit form
+        document.getElementById('adminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value;
+
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_URL}/admins`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ username, password, email })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    modalSystem.showAlert(
+                        'تم إنشاء الحساب!',
+                        `اسم المستخدم: <strong>${username}</strong><br>كلمة المرور: <strong>${password}</strong><br><br>⚠️ احفظ هذه المعلومات في مكان آمن!`,
+                        'success'
+                    );
+                    closeModal();
+                    loadAdmins();
+                } else {
+                    modalSystem.showAlert('خطأ', data.message || 'فشل إنشاء الحساب', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating admin:', error);
+                modalSystem.showAlert('خطأ', 'خطأ في إنشاء الحساب', 'error');
+            }
+        });
+
+        // Delete admin
+        async function deleteAdmin(id, username) {
+            if (!confirm(`هل أنت متأكد من حذف حساب "${username}"؟`)) return;
+
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_URL}/admins/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    modalSystem.showAlert('نجح!', 'تم حذف الحساب بنجاح', 'success');
+                    loadAdmins();
+                } else {
+                    modalSystem.showAlert('خطأ', data.message || 'فشل حذف الحساب', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting admin:', error);
+                modalSystem.showAlert('خطأ', 'خطأ في حذف الحساب', 'error');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('adminsContainer').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // Check auth
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Check superadmin and load
+        checkSuperAdmin().then(isSuperAdmin => {
+            if (isSuperAdmin) {
+                loadAdmins();
+            }
+        });
+    </script>
+</body>
+</html>

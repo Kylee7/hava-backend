@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الأسئلة - Perfect Cfw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .header {
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 30px;
+            border-radius: 15px;
+        }
+
+        .header h1 {
+            color: #a855f7;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .questions-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .question-card:hover {
+            border-color: #a855f7;
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #e0e0e0;
+            flex: 1;
+        }
+
+        .question-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-basic {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .badge-random {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .badge-active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .badge-inactive {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            color: #999;
+        }
+
+        .question-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .question-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 2px solid #a855f7;
+        }
+
+        .modal-content h2 {
+            color: #a855f7;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+    </style>
+    <link rel="stylesheet" href="css/modal-system.css">
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-question-circle"></i> إدارة أسئلة التفعيل</h1>
+        <div class="header-actions">
+            <button class="btn btn-success" id="addQuestionBtn">
+                <i class="fas fa-plus"></i> إضافة سؤال جديد
+            </button>
+            <button class="btn btn-back" onclick="window.location.href='admin-dashboard.html'">
+                <i class="fas fa-arrow-right"></i> العودة
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="questions-grid" id="questionsGrid">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>جاري التحميل...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Question Modal -->
+    <div id="questionModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">إضافة سؤال جديد</h2>
+            <form id="questionForm">
+                <div class="form-group">
+                    <label for="questionText">نص السؤال *</label>
+                    <input type="text" id="questionText" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="questionType">نوع الإجابة *</label>
+                    <select id="questionType">
+                        <option value="text">نص</option>
+                        <option value="number">رقم</option>
+                        <option value="email">بريد إلكتروني</option>
+                        <option value="textarea">نص طويل</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="placeholder">النص التوضيحي</label>
+                    <input type="text" id="placeholder" placeholder="اختياري">
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="isBasic">
+                        <label for="isBasic">سؤال أساسي (يظهر دائماً)</label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="orderGroup">
+                    <label for="order">الترتيب (للأسئلة الأساسية فقط)</label>
+                    <input type="number" id="order" value="0" min="0">
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="isRequired" checked>
+                        <label for="isRequired">إجابة مطلوبة</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="active" checked>
+                        <label for="active">نشط</label>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                    <button type="button" class="btn btn-danger" id="closeModalBtn">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://perfect-backend-production.up.railway.app/api';
+        const token = localStorage.getItem('adminToken');
+        let currentEditId = null;
+
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Load questions
+        async function loadQuestions() {
+            try {
+                const response = await fetch(`${API_URL}/questions/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    displayQuestions(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading questions:', error);
+            }
+        }
+
+        // Display questions
+        function displayQuestions(questions) {
+            const grid = document.getElementById('questionsGrid');
+
+            if (questions.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-question-circle"></i>
+                        <p>لا توجد أسئلة. قم بإضافة السؤال الأول!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = questions.map(q => `
+                <div class="question-card">
+                    <div class="question-header">
+                        <div class="question-text">${q.text}</div>
+                        <div class="question-badges">
+                            <span class="badge ${q.isBasic ? 'badge-basic' : 'badge-random'}">
+                                ${q.isBasic ? 'أساسي' : 'عشوائي'}
+                            </span>
+                            <span class="badge ${q.active ? 'badge-active' : 'badge-inactive'}">
+                                ${q.active ? 'نشط' : 'غير نشط'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="question-meta">
+                        <span><i class="fas fa-keyboard"></i> ${getTypeLabel(q.type)}</span>
+                        ${q.isBasic ? `<span><i class="fas fa-sort"></i> الترتيب: ${q.order}</span>` : ''}
+                        <span><i class="fas fa-${q.isRequired ? 'check' : 'times'}"></i> ${q.isRequired ? 'مطلوب' : 'اختياري'}</span>
+                    </div>
+                    <div class="question-actions">
+                        <button class="btn btn-primary" onclick="editQuestion('${q._id}')">
+                            <i class="fas fa-edit"></i> تعديل
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteQuestion('${q._id}')">
+                            <i class="fas fa-trash"></i> حذف
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getTypeLabel(type) {
+            const types = {
+                'text': 'نص',
+                'number': 'رقم',
+                'email': 'بريد إلكتروني',
+                'textarea': 'نص طويل'
+            };
+            return types[type] || type;
+        }
+
+        // Add question
+        document.getElementById('addQuestionBtn').addEventListener('click', () => {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'إضافة سؤال جديد';
+            document.getElementById('questionForm').reset();
+            document.getElementById('active').checked = true;
+            document.getElementById('isRequired').checked = true;
+            document.getElementById('questionModal').classList.add('active');
+        });
+
+        // Close modal
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('questionModal').classList.remove('active');
+        });
+
+        // Submit form
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const data = {
+                text: document.getElementById('questionText').value,
+                type: document.getElementById('questionType').value,
+                placeholder: document.getElementById('placeholder').value,
+                isBasic: document.getElementById('isBasic').checked,
+                order: parseInt(document.getElementById('order').value),
+                isRequired: document.getElementById('isRequired').checked,
+                active: document.getElementById('active').checked
+            };
+
+            try {
+                const url = currentEditId 
+                    ? `${API_URL}/questions/${currentEditId}`
+                    : `${API_URL}/questions`;
+                
+                const response = await fetch(url, {
+                    method: currentEditId ? 'PUT' : 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    document.getElementById('questionModal').classList.remove('active');
+                    loadQuestions();
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Error saving question:', error);
+                alert('حدث خطأ في حفظ السؤال');
+            }
+        });
+
+        // Edit question
+        async function editQuestion(id) {
+            try {
+                const response = await fetch(`${API_URL}/questions/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const q = result.data;
+                    currentEditId = id;
+                    document.getElementById('modalTitle').textContent = 'تعديل السؤال';
+                    document.getElementById('questionText').value = q.text;
+                    document.getElementById('questionType').value = q.type;
+                    document.getElementById('placeholder').value = q.placeholder || '';
+                    document.getElementById('isBasic').checked = q.isBasic;
+                    document.getElementById('order').value = q.order;
+                    document.getElementById('isRequired').checked = q.isRequired;
+                    document.getElementById('active').checked = q.active;
+                    document.getElementById('questionModal').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading question:', error);
+            }
+        }
+
+        // Delete question
+        async function deleteQuestion(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا السؤال؟')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/questions/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    loadQuestions();
+                }
+            } catch (error) {
+                console.error('Error deleting question:', error);
+                alert('حدث خطأ في حذف السؤال');
+            }
+        }
+
+        // Show/hide order field based on isBasic
+        document.getElementById('isBasic').addEventListener('change', (e) => {
+            document.getElementById('orderGroup').style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // Load questions on page load
+        loadQuestions();
+    </script>
+    <script src="js/modal-system.js"></script>
+</body>
+</html>
